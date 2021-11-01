@@ -6,17 +6,12 @@ import com.twitter.hbc.core.Constants;
 import com.twitter.hbc.core.Hosts;
 import com.twitter.hbc.core.HttpHosts;
 import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
-import com.twitter.hbc.core.endpoint.StatusesSampleEndpoint;
-import com.twitter.hbc.core.endpoint.StreamingEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -50,45 +45,27 @@ public class TwitterProducer {
     @Value("${twitter.access-token-secret}")
     private String secret;
 
-    //@Bean
     @Scheduled(initialDelay = 5_000, fixedDelay = 5_000)
     public void createTwitterClient() {
-        /** Setting up a connection   */
-        Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
-        StatusesFilterEndpoint hbEndpoint = new StatusesFilterEndpoint();
-        // Term that I want to search on Twitter
+        Hosts twitterHosts = new HttpHosts(Constants.STREAM_HOST);
+        StatusesFilterEndpoint twitterEndpoint = new StatusesFilterEndpoint();
         trackTerms = new ArrayList<>();
         trackTerms.add("#NFLBrasil");
-        hbEndpoint.trackTerms(trackTerms);
-
-        //StreamingEndpoint endpoint = new StatusesSampleEndpoint();
-
+        twitterEndpoint.trackTerms(trackTerms);
         msgQueue = new LinkedBlockingQueue<>(30);
-
-        // Twitter API and tokens
-        Authentication hosebirdAuth = new OAuth1(apiKey, apiSecret, token, secret);
-
+        Authentication twitterAuth = new OAuth1(apiKey, apiSecret, token, secret);
         twitterClient = new ClientBuilder()
-                .name("Hosebird-Client-01")                              // optional: mainly for the logs
-                .hosts(hosebirdHosts)
-                .authentication(hosebirdAuth)
-                .endpoint(hbEndpoint)
+                .name("twitter-stream-redpanda-01")
+                .hosts(twitterHosts)
+                .authentication(twitterAuth)
+                .endpoint(twitterEndpoint)
                 .processor(new StringDelimitedProcessor(msgQueue))
                 .build();
-
-        //return staticTwitterClient;
-
-        log.info("connecting on twitter...");
         twitterClient.connect();
         log.info("connecting on twitter: done!");
 
-        try {
-            while (true) {
-                collect();
-            }
-        }
-        finally {
-            stop();
+        while (true) {
+            collect();
         }
     }
 
@@ -99,7 +76,8 @@ public class TwitterProducer {
             msg = msgQueue.poll(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
-            stop();
+            this.twitterClient.stop();
+            log.info("shutting down client from twitter: done!");
         }
         if (msg != null) {
             log.info("sending it to topic...");
@@ -107,11 +85,5 @@ public class TwitterProducer {
         }
         log.info("collecting tweet and sending it: done!");
         return msg;
-    }
-
-    private void stop() {
-        log.info("shutting down client from twitter...");
-        this.twitterClient.stop();
-        log.info("shutting down client from twitter: done!");
     }
 }
