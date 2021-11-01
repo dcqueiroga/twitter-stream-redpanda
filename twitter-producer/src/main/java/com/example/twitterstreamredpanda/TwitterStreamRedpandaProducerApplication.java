@@ -9,10 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableBinding(TwitterBinder.class)
 @EnableScheduling
-public class TwitterStreamRedpandaApplication {
+public class TwitterStreamRedpandaProducerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TwitterStreamRedpandaApplication.class, args);
+        SpringApplication.run(TwitterStreamRedpandaProducerApplication.class, args);
     }
 
 }

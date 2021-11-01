@@ -21,6 +21,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -56,6 +57,7 @@ public class TwitterProducer {
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hbEndpoint = new StatusesFilterEndpoint();
         // Term that I want to search on Twitter
+        trackTerms = new ArrayList<>();
         trackTerms.add("#NFLBrasil");
         hbEndpoint.trackTerms(trackTerms);
 
