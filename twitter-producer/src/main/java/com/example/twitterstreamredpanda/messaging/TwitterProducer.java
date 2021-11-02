@@ -4,7 +4,7 @@ import com.example.twitterstreamredpanda.domain.TweetEntity;
 import com.example.twitterstreamredpanda.util.HashTagUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.social.twitter.api.*;
 import org.springframework.stereotype.Service;
@@ -16,16 +16,15 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TwitterService {
+public class TwitterProducer {
+
+    public static final String STR_SEPARATOR = ";";
 
     private final TwitterBinder twitterBinder;
     private final Twitter twitter;
-
-    @Value("${twitter.search-terms}")
-    private String searchTerms;
+    private final Environment env;
 
     public void run() {
-        List<StreamListener> listeners = new ArrayList<>();
         StreamListener streamListener = new StreamListener() {
             @Override
             public void onTweet(Tweet tweet) {
@@ -65,12 +64,22 @@ public class TwitterService {
         };
 
         // start stream when run a service
-        FilterStreamParameters parameters = new FilterStreamParameters();
-        for (String term: searchTerms.split(";")){
-            parameters.track(term);
-        }
+        List<StreamListener> listeners = new ArrayList<>();
+        FilterStreamParameters parameters = listParameters();
         listeners.add(streamListener);
         twitter.streamingOperations().filter(parameters, listeners);
+    }
+
+    private FilterStreamParameters listParameters() {
+        String searchTerms = env.getProperty("twitter.search-terms");
+        log.info("searchTerms: {}", searchTerms);
+        FilterStreamParameters parameters = new FilterStreamParameters();
+        if (searchTerms != null) {
+            for (String term : searchTerms.split(STR_SEPARATOR)) {
+                parameters.track(term);
+            }
+        }
+        return parameters;
     }
 
     private TweetEntity buildTweetEntity(Tweet tweet) {

@@ -1,7 +1,7 @@
 package com.example.twitterstreamredpanda;
 
 import com.example.twitterstreamredpanda.messaging.TwitterBinder;
-import com.example.twitterstreamredpanda.messaging.TwitterService;
+import com.example.twitterstreamredpanda.messaging.TwitterProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TwitterStreamRedpandaProducerApplication {
 
     @Autowired
-    TwitterService twitterService;
+    TwitterProducer twitterService;
 
     public static void main(String[] args) {
         SpringApplication.run(TwitterStreamRedpandaProducerApplication.class, args);
