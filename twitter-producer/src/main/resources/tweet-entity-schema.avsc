@@ -1,0 +1,48 @@
+{
+	"type": "record",
+	"name": "TweetEntity",
+	"namespace": "com.example.twitterstreamredpanda.domain",
+	"fields": [
+	{
+    	"name": "id",
+    	"type": "int"
+    },
+    {
+    	"name": "text",
+    	"type": "string"
+    },
+    {
+    	"name": "createdAt",
+    	"type": "int",
+    	"logicalType": "date"
+    },
+    {
+    	"name": "fromUser",
+    	"type": "string"
+    },
+    {
+    	"name": "languageCode",
+    	"type": "string"
+    },
+    {
+    	"name": "source",
+    	"type": "string"
+    },
+    {
+    	"name": "retweetCount",
+    	"type": "int"
+    },
+    {
+    	"name": "retweeted",
+    	"type": "boolean"
+    },
+    {
+    	"name": "favorited",
+    	"type": "boolean"
+    },
+    {
+    	"name": "favoriteCount",
+    	"type": "int"
+    }
+	]
+}
