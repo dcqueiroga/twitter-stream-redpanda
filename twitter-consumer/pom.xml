@@ -16,6 +16,10 @@
         <spring-cloud.version>2020.0.4</spring-cloud.version>
         <kafka-avro-serializer.version>4.0.0</kafka-avro-serializer.version>
         <avro.version>1.8.2</avro.version>
+        <modelmapper.version>2.3.5</modelmapper.version>
+        <spring-cloud-stream.version>3.0.13.RELEASE</spring-cloud-stream.version>
+        <spring-elasticsearch.version>4.0.0.RELEASE</spring-elasticsearch.version>
+        <spring-cloud-stream-schema.version>2.2.1.RELEASE</spring-cloud-stream-schema.version>
     </properties>
 
     <dependencies>
@@ -31,43 +35,32 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>2.3.5</version>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <!-- Kafka -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
-            <version>3.0.13.RELEASE</version>
+            <version>${spring-cloud-stream.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-streams</artifactId>
-        </dependency>
-
-        <!-- Twitter -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-social-twitter</artifactId>
-            <version>1.5.22.RELEASE</version>
         </dependency>
 
         <!-- Elasticsearch -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
-            <version>4.0.0.RELEASE</version>
+            <version>${spring-elasticsearch.version}</version>
         </dependency>
 
         <!-- Schema Registry -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream-schema</artifactId>
-            <version>2.2.1.RELEASE</version>
+            <version>${spring-cloud-stream-schema.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -117,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
-                <version>1.8.2</version>
+                <version>${avro.version}</version>
                 <executions>
                     <execution>
                         <id>schemas</id>

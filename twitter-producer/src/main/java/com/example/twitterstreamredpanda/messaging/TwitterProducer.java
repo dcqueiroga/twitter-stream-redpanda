@@ -41,7 +41,7 @@ public class TwitterProducer {
 
                 // send tweet to Kafka topic
                 log.info("User '{}', Tweeted : {}, from ; {}", tweet.getUser().getName(), tweet.getText(), tweet.getUser().getLocation());
-                TweetEntity tweetEntity = buildTweetEntity(tweet);
+                TweetEntity tweetEntity = convert(tweet);
                 twitterBinder.tweetsOut().send(MessageBuilder
                         .withPayload(tweetEntity)
                         .build());
@@ -82,7 +82,7 @@ public class TwitterProducer {
         return parameters;
     }
 
-    private TweetEntity buildTweetEntity(Tweet tweet) {
+    private TweetEntity convert(Tweet tweet) {
         return TweetEntity.newBuilder()
                 .setId((int) tweet.getId())
                 .setText(tweet.getText())

@@ -120,35 +120,25 @@ To start, create the first application using [Spring Initializr](https://start.s
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream</artifactId>
-    <version>3.0.13.RELEASE</version>
+    <version>${spring-cloud-stream.version}</version>
 </dependency>
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.apache.kafka</groupId>
-    <artifactId>kafka-streams</artifactId>
 </dependency>
 
 <!-- Twitter -->
 <dependency>
     <groupId>org.springframework.social</groupId>
     <artifactId>spring-social-twitter</artifactId>
-    <version>1.1.2.RELEASE</version>
-    <scope>compile</scope>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-social-twitter</artifactId>
-    <version>1.5.22.RELEASE</version>
+    <version>${spring-social-twitter.version}</version>
 </dependency>
 
 <!-- Schema Registry -->
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream-schema</artifactId>
-    <version>2.2.1.RELEASE</version>
+    <version>${spring-cloud-stream-schema.version}</version>
 </dependency>
 <dependency>
     <groupId>org.apache.avro</groupId>
@@ -263,7 +253,7 @@ public class TwitterStreamRedpandaProducerApplication {
     ...
 ```
 
-The next step is develop the class that will fetch data from Twitter:
+The next step is create <b>TwitterProducer.java</b> to fetch data from Twitter:
 
 ```java
 @Slf4j
@@ -292,7 +282,7 @@ public class TwitterProducer {
 
                 // send tweet to Kafka topic
                 log.info("User '{}', Tweeted : {}, from ; {}", tweet.getUser().getName(), tweet.getText(), tweet.getUser().getLocation());
-                TweetEntity tweetEntity = buildTweetEntity(tweet);
+                TweetEntity tweetEntity = convert(tweet);
                 twitterBinder.tweetsOut().send(MessageBuilder
                         .withPayload(tweetEntity)
                         .build());
@@ -319,36 +309,25 @@ Now, let's create the consumer application and add the following Maven dependenc
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream</artifactId>
-    <version>3.0.13.RELEASE</version>
+    <version>${spring-cloud-stream.version}</version>
 </dependency>
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.apache.kafka</groupId>
-    <artifactId>kafka-streams</artifactId>
-</dependency>
-
-<!-- Twitter -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-social-twitter</artifactId>
-    <version>1.5.22.RELEASE</version>
 </dependency>
 
 <!-- Elasticsearch -->
 <dependency>
     <groupId>org.springframework.data</groupId>
     <artifactId>spring-data-elasticsearch</artifactId>
-    <version>4.0.0.RELEASE</version>
+    <version>${spring-elasticsearch.version}</version>
 </dependency>
 
 <!-- Schema Registry -->
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-stream-schema</artifactId>
-    <version>2.2.1.RELEASE</version>
+    <version>${spring-cloud-stream-schema.version}</version>
 </dependency>
 <dependency>
     <groupId>org.apache.avro</groupId>
