@@ -59,56 +59,69 @@ This <b>docker-compose.yml</b> configuration file looks like as it follows:
 ```yaml
 version: '3.7'
 
+volumes:
+  redpanda-sr-1:
+    name: redpanda-sr-1
+
 services:
   redpanda:
     command:
-    - redpanda
-    - start
-    - --smp
-    - '1'
-    - --reserve-memory
-    - 0M
-    - --overprovisioned
-    - --node-id
-    - '0'
-    - --kafka-addr
-    - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
-    - --advertise-kafka-addr
-    - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
-    image: docker.vectorized.io/vectorized/redpanda:v21.7.6
-    container_name: redpanda-1
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '0'
+      - --pandaproxy-addr
+      - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - PLAINTEXT://127.0.0.1:28082,OUTSIDE://127.0.0.1:8082
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+    image: docker.vectorized.io/vectorized/redpanda:v21.9.6
+    container_name: redpanda-sr-1
     ports:
-    - 9092:9092
-    - 29092:29092
-    
+      - 8081:8081
+      - 8082:8082
+      - 9092:9092
+    volumes:
+      - redpanda-sr-1:/var/lib/redpanda/data
+
   elasticsearch:
     container_name: elasticsearch-1
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
     network_mode: elastic
     environment:
-    - discovery.type=single-node
-    - cluster.routing.allocation.disk.threshold_enabled=true
-    - cluster.routing.allocation.disk.watermark.low=65%
-    - cluster.routing.allocation.disk.watermark.high=70%
-    - xpack.security.enabled=true
-    - xpack.security.audit.enabled=true
-    - ELASTIC_PASSWORD=elastic
+      - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=true
+      - cluster.routing.allocation.disk.watermark.low=65%
+      - cluster.routing.allocation.disk.watermark.high=70%
+      - xpack.security.enabled=true
+      - xpack.security.audit.enabled=true
+      - ELASTIC_PASSWORD=elastic
     ports:
-    - 9200:9200
-    - 9300:9300
-    
+      - 9200:9200
+      - 9300:9300
+
   kibana:
     container_name: kibana-1
     image: docker.elastic.co/kibana/kibana:7.15.1
     network_mode: elastic
     environment:
-    - ELASTICSEARCH_HOSTS=http://elasticsearch-1:9200
-    - ELASTICSEARCH_USERNAME=elastic
-    - ELASTICSEARCH_PASSWORD=elastic
+      - ELASTICSEARCH_HOSTS=http://elasticsearch-1:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=elastic
     ports:
-    - 5601:5601
+      - 5601:5601
     depends_on:
-    - elasticsearch
+      - elasticsearch
 ```
 
 ### Creating the Producer Module
