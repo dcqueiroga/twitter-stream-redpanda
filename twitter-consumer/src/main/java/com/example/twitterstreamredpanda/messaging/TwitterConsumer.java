@@ -24,9 +24,11 @@ public class TwitterConsumer {
     public void consumer(@Payload TweetEntity tweet) {
         try {
             log.info("Message consumed: {}", tweet);
-            tweetRepository.save(convert(tweet));
+            TweetElasticEntity tweetEs = convert(tweet);
+            tweetEs.setCreatedAtByEpochDays(tweet.getCreatedAt());
+            tweetRepository.save(tweetEs);
         } catch (Exception e) {
-            log.error("Error executing TwitterConsumer.consumer method", e.getLocalizedMessage());
+            log.error("Error executing TwitterConsumer.consumer method: {}", e.getLocalizedMessage());
         }
     }
 

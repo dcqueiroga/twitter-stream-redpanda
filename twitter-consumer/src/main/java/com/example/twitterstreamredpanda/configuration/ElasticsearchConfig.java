@@ -14,14 +14,21 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories(basePackages = "com.example.twitterstreamredpanda.domain.repository")
 public class ElasticsearchConfig {
 
-    @Value("${elasticsearch.host}")
+    @Value("${spring.elasticsearch.rest.uris}")
     private String elasticsearchHost;
+
+    @Value("${spring.elasticsearch.rest.username}")
+    private String elasticsearchUsername;
+
+    @Value("${spring.elasticsearch.rest.password}")
+    private String elasticsearchPassword;
 
     @Bean
     public RestHighLevelClient client() {
-        ClientConfiguration clientConfiguration
-                = ClientConfiguration.builder()
+        ClientConfiguration clientConfiguration =
+                ClientConfiguration.builder()
                 .connectedTo(elasticsearchHost)
+                .withBasicAuth(elasticsearchUsername, elasticsearchPassword)
                 .build();
 
         return RestClients.create(clientConfiguration).rest();

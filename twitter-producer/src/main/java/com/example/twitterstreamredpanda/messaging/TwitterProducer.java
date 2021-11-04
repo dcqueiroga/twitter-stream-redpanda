@@ -86,7 +86,7 @@ public class TwitterProducer {
         return TweetEntity.newBuilder()
                 .setId((int) tweet.getId())
                 .setText(tweet.getText())
-                .setCreatedAt((int) tweet.getCreatedAt().getTime())
+                .setCreatedAt((int) (tweet.getCreatedAt().toInstant().toEpochMilli() / 86400000))
                 .setFromUser(tweet.getFromUser())
                 .setLanguageCode(tweet.getLanguageCode())
                 .setSource(tweet.getSource())
